@@ -55,55 +55,95 @@ app.get('/', (req, res)=>{
 });
 
 app.get("/account", (req, res)=>{
-    console.log("hey this request was redirected to account");
-    //console.log(req.body.username);
+    
+    var query = `SELECT asset, quantity FROM portfolios WHERE username='${LoggedInUser}';`
+    var assets = queryDB(query);
+    assets.then(function(result){
+        res.render("account", {user: LoggedInUser, assets: result});
+    });
+});
 
-    res.render("account", {user: LoggedInUser});
+app.get("/deleteAccount", (req, res)=>{
+    var query = `DELETE FROM users WHERE username='${LoggedInUser}';`
+    
+    var deleteUser = queryDB(query);
+    deleteUser.then(function(result){
+        res.redirect("/");
+    });
 });
 
 app.post("/login", (req, res)=>{
     //only took me an eon to figure out what's wrong
     //https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 
-    var uname = req.body.username;
-    var pword = req.body.password;
+    var inputUsername = req.body.username;
+    var inputPassword = req.body.password;
     var action = req.body.loginbutton;
 
     //this is actually amazing
     //https://stackoverflow.com/questions/35737482/multiple-submit-buttons-html-express-node-js
     //mind blowing, really
 
+    if(inputUsername == "" || inputPassword==""){
+        //invalid input
+        res.redirect("/");
+        return;
+    }
+
     if(action == "Login"){
         //login
-        if (validateLogin(uname, pword)){
-            //the login was valid
-            //res.render("account", {user: req.body.username});
-            LoggedInUser = uname;
-            res.redirect("account");
-        }
-        else{
-            //the login was invalid
-            //simply return the user to the homepage
-            res.redirect("/");
-        }
+        validateLogin(inputUsername, inputPassword, res);
     }
     else{
         //create account
+        createUser(inputUsername, inputPassword, res);
     }
 });
 
-function validateLogin(username, password){
+function validateLogin(username, password, res){
+
     var query = "SELECT password FROM users WHERE username='"+username+"';";
     
     var login = queryDB(query);
     login.then(function(result){
-        console.log(result);
-        return false;
+        if (password == result[0].password){
+            //login was valid
+            LoggedInUser = username;
+            res.redirect("account");
+        }
+        else{
+            //login was invalid
+            res.redirect("/");
+        }
     });
 }
 
-function createUser(username, password){
+function createUser(username, password, res){
 
+    //first, check if the user already exists
+
+    var users = queryDB("SELECT username FROM users;");
+    users.then(function(result){
+        var exists = false;
+
+        result.forEach(element => {
+            if (element.username == username){
+                //the user already exists, do nothing
+                console.log("the user already exists!");
+                exists = true;
+            }
+        });
+
+
+        //the user does not exist, create a new user
+        if(!exists){
+            var query = `insert into users (username, password) values ('${username}', '${password}');`
+            var insertUser = queryDB(query);
+            
+        }
+
+        res.redirect("/");
+    });
 }
 
 

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Awesome Assets</title>
     <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
+    <!--https://www.w3schools.com/css/css_table.asp-->
     <style>
         h1{
             text-align: center;
@@ -17,14 +18,43 @@
             color:azure;
             text-align: center;
             text-decoration: none;
+            padding: 14px 16px;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid;
+            font-size: 25px;
         }
     </style>
 </head>
 <body>
     <div class = "topnav">
         <a href="/">Logout</a>
+        <a href="/deleteAccount">Delete Account</a>
     </div>
     <h1>Welcome <%=locals.user%></h1>
     <h1>Your portfolio</h1>
+    <table>
+        <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
+        <tr>
+            <th>asset</th>
+            <th>quantity</th>
+        </tr>
+        <tr>
+            <% assets.forEach(function(asset){ %>
+                <tr>
+                    <td><%= asset.asset%></td>
+                    <td><%= asset.quantity%></td>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
+    <br>
+
+    <h1>Market</h1>
+    
 </body>
 </html>
