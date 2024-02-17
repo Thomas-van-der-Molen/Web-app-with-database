@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
+    <style>
+        h1{
+            text-align: center;
+        }
+        .topnav{
+            background-color:darkslategray;
+        }
+        .topnav a{
+            font-size: 40px;
+            color:azure;
+            text-align: center;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class = "topnav">
+        <a href="/">Logout</a>
+    </div>
+    <h1>Welcome <%=locals.user%></h1>
+    <h1>Your portfolio</h1>
+</body>
+</html>
