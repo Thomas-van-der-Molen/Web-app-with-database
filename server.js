@@ -72,6 +72,16 @@ app.get("/deleteAccount", (req, res)=>{
     });
 });
 
+app.get("/market", (req,res)=>{
+    //the first time the user visits the market, they see this
+    var query = `select * from listings;`
+    var listings = queryDB(query);
+    listings.then(function(result){
+
+        res.render("market", {listings : result});
+    });
+})
+
 app.post("/login", (req, res)=>{
     //only took me an eon to figure out what's wrong
     //https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm

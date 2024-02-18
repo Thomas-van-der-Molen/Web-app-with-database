@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Awesome Assets</title>
-    <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
-    <!--https://www.w3schools.com/css/css_table.asp-->
+    <!--https://www.w3schools.com/howto/howto_css_dropdown.asp-->
     <style>
         h1{
             text-align: center;
@@ -21,25 +20,15 @@
             padding: 14px 16px;
         }
         table{
-            width: 100%;
+            width: 50%;
             border-collapse: collapse;
+            margin: auto;
         }
         table, th, td{
             border: 1px solid;
             font-size: 25px;
-        }
-        .marketLink{
-            font-size: 50px;
-            text-decoration: none;
-            background-color: darkslategrey;
-            color: azure;
             text-align: center;
         }
-        .marketLink a{
-            text-decoration: none;
-            color: azure;
-        }
-        
     </style>
 </head>
 <body>
@@ -49,28 +38,32 @@
         <a href="/market">Market</a>
         <a href="/account">Profile</a>
     </div>
-    <h1>Welcome <%=locals.user%></h1>
-    <h1>Your portfolio</h1>
+    <h1>Market</h1>
+    <p>Filters</p>
+    <div class="ExchangeFilters">
+        <form>
+            <input type="checkbox" name="NYSE">
+            <label for="NYSE">NYSE</label>
+            <input type="checkbox" name="NASDAQ">
+            <label for="NASDAQ">NASDAQ</label>
+            <input type="submit" value="filter">
+        </form>
+    </div>
     <table>
         <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
         <tr>
-            <th>asset</th>
-            <th>quantity</th>
+            <th>Exchange</th>
+            <th>Asset</th>
         </tr>
         <tr>
-            <% assets.forEach(function(asset){ %>
+            <% listings.forEach(function(listing){ %>
                 <tr>
-                    <td><%= asset.asset%></td>
-                    <td><%= asset.quantity%></td>
+                    <td><%= listing.exchange%></td>
+                    <td><%= listing.asset%></td>
                 </tr>
             <% }) %>
         </tr>
     </table>
-    <br>
-    <div class="marketLink">
-        <a href="/market">Go to the market</a>
-    </div>
-    
 
 </body>
 </html>
