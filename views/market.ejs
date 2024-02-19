@@ -6,7 +6,7 @@
     <title>Awesome Assets</title>
     <!--https://www.w3schools.com/howto/howto_css_dropdown.asp-->
     <style>
-        h1{
+        h1, h2{
             text-align: center;
         }
         .topnav{
@@ -95,16 +95,16 @@
     </table> -->
 
     <h1>Make a trade</h1>
-    <form>
+    <form id="trade" action="/trade" method="post">
         <label for = "asset">Asset</label>
         <select name = "asset">
             <% listings.forEach(function(listing) {%>
-                <option value = 'an asset'><%=listing.asset%></option>
+                <option value = <%=listing.asset%>> <%=listing.asset%> </option>
                 <% }) %>
         </select>
         
         <label for = "quantity">quantity</label>
-        <input type="number" name = "quantity">
+        <input type="number" name = "quantity" value="0">
         
         <select name = "buyOrSell">
             <option value = "buy">buy</option>
@@ -113,6 +113,81 @@
         
         <input type="submit" value="place order">
     </form>
+
+    <!--Stocks-->
+    <h2>Stocks</h2>
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Dividend</th>
+            <th>Market Cap</th>
+            <th>High Price</th>
+            <th>Low Price</th>
+        </tr>
+        <tr>
+            <% stocks.forEach(function(stock){ %>
+                <tr>
+                    <td><%= stock.symbol%></td>
+                    <td><%= stock.price%></td>
+                    <td><%= stock.dividend%></td>
+                    <td><%= stock.market_cap%></td>
+                    <td><%= stock.high_price%></td>
+                    <td><%= stock.low_price%></td>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
+    <br>
+
+    <!--Cryptos-->
+    <h2>Cryptocurrencies</h2>
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Coin Type</th>
+            <th>Market Cap</th>
+            <th>High Price</th>
+            <th>Low Price</th>
+        </tr>
+        <tr>
+            <% cryptos.forEach(function(crypto){ %>
+                <tr>
+                    <td><%= crypto.symbol%></td>
+                    <td><%= crypto.price%></td>
+                    <td><%= crypto.coin_type%></td>
+                    <td><%= crypto.market_cap%></td>
+                    <td><%= crypto.high_price%></td>
+                    <td><%= crypto.low_price%></td>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
+    <br>
+
+    <!--Commodities-->
+    <h2>Commodities</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Commodity Type</th>
+            <th>High Price</th>
+            <th>Low Price</th>
+        </tr>
+        <tr>
+            <% commodities.forEach(function(commodity){ %>
+                <tr>
+                    <td><%= commodity.name%></td>
+                    <td><%= commodity.price%></td>
+                    <td><%= commodity.commodity_type%></td>
+                    <td><%= commodity.high_price%></td>
+                    <td><%= commodity.low_price%></td>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
 
 </body>
 </html>
