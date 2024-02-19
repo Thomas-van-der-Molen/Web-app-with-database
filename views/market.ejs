@@ -29,28 +29,57 @@
             font-size: 25px;
             text-align: center;
         }
+        .ExchangeFilters{
+            margin: auto;
+            text-align: center;
+        }
+        form{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+
     <div class = "topnav">
         <a href="/">Logout</a>
         <a href="/deleteAccount">Delete Account</a>
         <a href="/market">Market</a>
         <a href="/account">Profile</a>
     </div>
+    
     <h1>Market</h1>
-    <p>Filters</p>
-    <div class="ExchangeFilters">
+    
+    
+    <!-- <div class="ExchangeFilters">
         <form>
-            <input type="checkbox" name="NYSE">
-            <label for="NYSE">NYSE</label>
-            <input type="checkbox" name="NASDAQ">
-            <label for="NASDAQ">NASDAQ</label>
-            <input type="submit" value="filter">
+            https://www.freecodecamp.org/news/html-select-tag-how-to-make-a-dropdown-menu-or-combo-list/
+            <label for = "Exchanges">Exchange</label>
+            <select name = "Exchanges">
+                <option value="any">any</option>
+                <% exchanges.forEach(function(exchange){ %>
+                    <option value = "an exchange"><%= exchange.exchange%></option>
+                    <% }) %>
+            </select>
+            
+            <label for = "Asset Type">Asset Type</label>
+            <select name = "Asset Type">
+                <option value="any">any</option>
+                <option value = "Stocks">Stocks</option>
+                <option value = "Cryptos">Cryptos</option>
+                <option value = "Commodities">Commodities</option>
+            </select>
+
+            <input type="text">
+            <input type="submit" name="search_button" value="search">
         </form>
-    </div>
-    <table>
-        <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
+    </div> -->
+
+    
+    <br>
+
+
+    <!-- <table>
+        https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html
         <tr>
             <th>Exchange</th>
             <th>Asset</th>
@@ -63,7 +92,27 @@
                 </tr>
             <% }) %>
         </tr>
-    </table>
+    </table> -->
+
+    <h1>Make a trade</h1>
+    <form>
+        <label for = "asset">Asset</label>
+        <select name = "asset">
+            <% listings.forEach(function(listing) {%>
+                <option value = 'an asset'><%=listing.asset%></option>
+                <% }) %>
+        </select>
+        
+        <label for = "quantity">quantity</label>
+        <input type="number" name = "quantity">
+        
+        <select name = "buyOrSell">
+            <option value = "buy">buy</option>
+            <option value = "sell">sell</option>
+        </select>
+        
+        <input type="submit" value="place order">
+    </form>
 
 </body>
 </html>

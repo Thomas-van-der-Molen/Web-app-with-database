@@ -56,11 +56,15 @@ app.get('/', (req, res)=>{
 
 app.get("/account", (req, res)=>{
     
-    var query = `SELECT asset, quantity FROM portfolios WHERE username='${LoggedInUser}';`
+    var query = `SELECT asset, quantity FROM portfolios WHERE username='${LoggedInUser}';`;
     var assets = queryDB(query);
-    assets.then(function(result){
-        res.render("account", {user: LoggedInUser, assets: result});
+    query = `SELECT balance FROM users WHERE username='${LoggedInUser}';`;
+    var balance = queryDB(query);
+    Promise.all([assets, balance]).then(function(result){
+        console.log(result[1]);
+        res.render("account", {user: LoggedInUser, assets:result[0], balance:result[1]});
     });
+   
 });
 
 app.get("/deleteAccount", (req, res)=>{
@@ -76,10 +80,17 @@ app.get("/market", (req,res)=>{
     //the first time the user visits the market, they see this
     var query = `select * from listings;`
     var listings = queryDB(query);
-    listings.then(function(result){
+    query = `select distinct exchange from listings`
+    var exchanges = queryDB(query);
 
-        res.render("market", {listings : result});
+    //https://medium.com/swlh/dealing-with-multiple-promises-in-javascript-41d6c21f20ff
+    Promise.all([listings, exchanges]).then(function(result){
+        console.log(result[1]);
+        res.render("market", {listings: result[0], exchanges: result[1]
+
+        });
     });
+
 })
 
 app.post("/login", (req, res)=>{
