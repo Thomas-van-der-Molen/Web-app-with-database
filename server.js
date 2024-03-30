@@ -18,28 +18,28 @@
 //https://medium.com/swlh/dealing-with-multiple-promises-in-javascript-41d6c21f20ff
 //https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 //https://stackoverflow.com/questions/35737482/multiple-submit-buttons-html-express-node-js
+//https://mariadb.com/kb/en/getting-started-with-the-nodejs-connector/
 //
-//
+
+//dependencies
 const express = require('express');
-
 const maria = require('mariadb');
-const app = express();
-
 const bodyParser = require('body-parser');
 const multer = require('multer');
+var cookieParser = require('cookie-parser');
+
+const app = express();
 var upload = multer();
 
 
 app.use(bodyParser.json()); 
-
 app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
-
+//function which will accept a string formatted as a query as input
+//The function will then connect to the local database and execute the query
 async function queryDB(query){
     let conn;
     try{
@@ -50,8 +50,8 @@ async function queryDB(query){
             database : 'awesomeassets'
         });
 
-       var users = await conn.query(query);
-       return users;
+       var result = await conn.query(query);
+       return result;
 
     } catch (err){
         console.log(err);
@@ -60,9 +60,13 @@ async function queryDB(query){
     }
 }
 
-//Vulnerable to client-side cookie manipulation
+//The home page of the site
+//Presented when the user logs out or visits for the first time
 app.get('/', (req, res)=>{
+    //clear the cookie in case the user was logged in
     res.clearCookie("loginDetails");
+
+    //get the users in the database, to show available users to 
     var users = queryDB("select * from users;");
     users.then(function(result){
         res.render('index', {users:  result});
@@ -70,13 +74,17 @@ app.get('/', (req, res)=>{
 
 });
 
+//After the user has logged in, they can view the account page
 app.get("/account", (req, res)=>{
    
-
+    //use the user's cookie to get the user's username
     var LoggedInUser = req.cookies["loginDetails"]["username"];
         
+    //get the user's assets from the database
     var query = `SELECT asset, quantity FROM portfolios WHERE username='${LoggedInUser}';`;
     var assets = queryDB(query);
+
+    //get the user's balance
     query = `SELECT balance FROM users WHERE username='${LoggedInUser}';`;
     var balance = queryDB(query);
     Promise.all([assets, balance]).then(function(result){
@@ -85,27 +93,38 @@ app.get("/account", (req, res)=>{
    
 });
 
+//If the user requests to delete their account, this logic is triggered
 app.get("/deleteAccount", (req, res)=>{
+    //Use the user's cookie to get their username
     var LoggedInUser = req.cookies["loginDetails"]["username"];
+    //clear the cookie, to end the user's session
     res.clearCookie("loginDetails");
+
+    //delete the user from the database
+    //NEED TO FIX THIS - only the user's entry in the users table is deleted
+    //All the information about their portfolio will persist though
     var query = `DELETE FROM users WHERE username='${LoggedInUser}';`
-    
     var deleteUser = queryDB(query);
     deleteUser.then(function(result){
         res.redirect("/");
     });
 });
 
+//When the user navigates to the market page, this logic will trigger
 app.get("/market", (req,res)=>{
-    //the first time the user visits the market, they see this
+
     var query = `select * from listings;`
     var listings = queryDB(query);
+
     query = `select distinct exchange from listings;`
     var exchanges = queryDB(query);
+
     query = `select * from stocks;`
     var stocks = queryDB(query);
+
     query = `select * from cryptocurrencies;`
     var cryptos = queryDB(query);
+
     query = `select * from commodities;`
     var commodities = queryDB(query);
 
@@ -118,6 +137,7 @@ app.get("/market", (req,res)=>{
 
 })
 
+//When the user submits the login form on the login page, this logic triggers
 app.post("/login", (req, res)=>{
     var inputUsername = req.body.username;
     var inputPassword = req.body.password;
@@ -139,16 +159,16 @@ app.post("/login", (req, res)=>{
     }
 });
 
+//When the user submits the form for a trade, this logic triggers
 app.post("/trade", (req, res)=>{
     //the user desires to make a trade.
     //Find out if the trade was a buy or sell.
     //If it was a purchase, determine if they have enough money to make the purchase
-    //if so, add the appropriate stocks to their account and show their account. and subtract the correct balance
-    //if not, do nothing and return them to their account
+    //if so, add the appropriate stocks to their account and subtract the correct balance
+    //if not, do nothing
     //if it was a sale, determine if they have the stocks needed to sell
     //if so, add the correct balance to their account and remove the correct stocks from their account
-    //then return them to their account
-    //if they did not have enough stocks for the sale, do nothing and return them to their account
+    //if they did not have enough stocks for the sale, do nothing 
     var buyOrSell = req.body.buyOrSell;
     var asset = req.body.asset;
     var quantity = req.body.quantity;
@@ -176,6 +196,7 @@ app.post("/trade", (req, res)=>{
         var totalPrice = quantity * result[1][0].price;
         balance = result[0][0].balance;
 
+        //check if the "numberOwned" query returned a result
         if(result[2][0]){
             numberOwned = result[2][0].quantity;
         }
@@ -232,12 +253,13 @@ function sellStock(asset, quantity, cost, balance, numberOwned, LoggedInUser){
         //if they already owned the stock, update the value
         var query;
         query = `UPDATE portfolios SET quantity=${Number(numberOwned)-Number(quantity)} WHERE username='${LoggedInUser}' and asset='${asset}';`;
-        //otherwise, make a new entry in portfolios
+        
         var updatePortfolio = queryDB(query);
-        //update the user's balance
+   
         query = `UPDATE users SET balance=${Number(balance)+Number(cost)} WHERE username='${LoggedInUser}';`;
         var updateBalance = queryDB(query);
         var removeIfZero;
+
         //just do some housekeeping work - delete all portfolio entries if the quantity is zero.
         if(Number(numberOwned) - Number(quantity) == 0){
             query = `DELETE FROM portfolios WHERE quantity=0;`;
@@ -245,27 +267,26 @@ function sellStock(asset, quantity, cost, balance, numberOwned, LoggedInUser){
         }
         
         Promise.all([updatePortfolio, updateBalance, removeIfZero]).then(function(result){
-        
             return;
-	});	
+	    });	
 
     }
 
 }
 
+//Helper function to make sure that the user has submitted valid login details
 function validateLogin(username, password, res){
 
     var query = "SELECT password FROM users WHERE username='"+username+"';";
-    
     var login = queryDB(query);
+
     login.then(function(result){
         if (password == result[0].password){
             //login was valid
-	    //give the user a cookie containing their username, security issue
+	        //give the user a cookie containing their username, security issue
             var login = {"username" : username}
-	    res.cookie("loginDetails", login);
-
-	    res.redirect("account");
+	        res.cookie("loginDetails", login);
+	        res.redirect("account");
         }
         else{
             //login was invalid
@@ -274,6 +295,7 @@ function validateLogin(username, password, res){
     });
 }
 
+//Helper function to create a user if the user wants to make a new account
 function createUser(username, password, res){
 
     //first, check if the user already exists
@@ -293,9 +315,8 @@ function createUser(username, password, res){
 
         //the user does not exist, create a new user
         if(!exists){
-            var query = `insert into users (username, password) values ('${username}', '${password}');`
+            var query = `insert into users (username, password, balance) values ('${username}', '${password}', 10000);`
             var insertUser = queryDB(query);
-            
         }
 
         res.redirect("/");
@@ -303,5 +324,5 @@ function createUser(username, password, res){
 }
 
 
-
+//start the app - boilerplate
 app.listen(3000);
