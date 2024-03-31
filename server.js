@@ -19,7 +19,7 @@
 //https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 //https://stackoverflow.com/questions/35737482/multiple-submit-buttons-html-express-node-js
 //https://mariadb.com/kb/en/getting-started-with-the-nodejs-connector/
-//
+//https://www.geeksforgeeks.org/node-js-hash-digest-method/
 
 //dependencies
 const express = require('express');
