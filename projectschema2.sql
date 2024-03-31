@@ -23,16 +23,16 @@ drop table if exists users;
 
 create table users(
 	username VARCHAR(40) primary key,
-	password VARCHAR(40) not null,
+	password VARCHAR(64) not null,
 	balance decimal(10,2)
 );
 
 insert into users (username, password, balance) values 
-	('johnny123', 'secretpassword', 0),
-	('ernie', 'eagle123', 0),
-	('thomas', 'worldsworstprogrammer', 0),
-	('warren', 'oracleofomaha', 0),
-	('robert', 'iloveinvesting', 0);
+	('johnny123', '95d30169a59c418b52013315fc81bc99fdf0a7b03a116f346ab628496f349ed5', 0),
+	('ernie', '8a0151cbda82477895788d6023e567bb7ff8f7893b2aa83c16079f8d9bb92a58', 0),
+	('thomas', '18ef3d5708aa192eb98e6cb11964557171ef511531fdd412c5930867ffff752c', 0),
+	('warren', '32540fadef40c52354a7e6a2bf3b40b4a2e4bbaf2cb7c7a72c10a0723dc26756', 0),
+	('robert', '1d937cd89b8509c7590550654089de423c2e6efc03efc201283be67443194753', 0);
 	
 -- create portfolios table
 drop table if exists portfolios;

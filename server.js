@@ -26,6 +26,7 @@ const express = require('express');
 const maria = require('mariadb');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const crypto = require('crypto');
 var cookieParser = require('cookie-parser');
 
 const app = express();
@@ -279,11 +280,12 @@ function validateLogin(username, password, res){
 
     var query = "SELECT password FROM users WHERE username='"+username+"';";
     var login = queryDB(query);
-
+    var hash = crypto.createHash("sha256").update(password).digest("hex");
+	
     login.then(function(result){
-        if (password == result[0].password){
+        if (hash  == result[0].password){
             //login was valid
-	        //give the user a cookie containing their username, security issue
+	    //give the user a cookie containing their username, security issue
             var login = {"username" : username}
 	        res.cookie("loginDetails", login);
 	        res.redirect("account");
@@ -301,6 +303,7 @@ function createUser(username, password, res){
     //first, check if the user already exists
 
     var users = queryDB("SELECT username FROM users;");
+    var hash = crypto.createHash("sha256").update(password).digest("hex");
     users.then(function(result){
         var exists = false;
 
@@ -315,7 +318,7 @@ function createUser(username, password, res){
 
         //the user does not exist, create a new user
         if(!exists){
-            var query = `insert into users (username, password, balance) values ('${username}', '${password}', 10000);`
+            var query = `insert into users (username, password, balance) values ('${username}', '${hash}', 10000);`
             var insertUser = queryDB(query);
         }
 
