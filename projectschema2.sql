@@ -24,15 +24,19 @@ drop table if exists users;
 create table users(
 	username VARCHAR(40) primary key,
 	password VARCHAR(64) not null,
-	balance decimal(10,2)
+	balance decimal(10,2),
+	isExchange BOOLEAN
 );
 
-insert into users (username, password, balance) values 
-	('johnny123', '95d30169a59c418b52013315fc81bc99fdf0a7b03a116f346ab628496f349ed5', 0),
-	('ernie', '8a0151cbda82477895788d6023e567bb7ff8f7893b2aa83c16079f8d9bb92a58', 0),
-	('thomas', '18ef3d5708aa192eb98e6cb11964557171ef511531fdd412c5930867ffff752c', 0),
-	('warren', '32540fadef40c52354a7e6a2bf3b40b4a2e4bbaf2cb7c7a72c10a0723dc26756', 0),
-	('robert', '1d937cd89b8509c7590550654089de423c2e6efc03efc201283be67443194753', 0);
+insert into users (username, password, balance, isExchange) values 
+	('johnny123', '95d30169a59c418b52013315fc81bc99fdf0a7b03a116f346ab628496f349ed5', 10000, false),
+	('ernie', '8a0151cbda82477895788d6023e567bb7ff8f7893b2aa83c16079f8d9bb92a58',     10000, false),
+	('thomas', '18ef3d5708aa192eb98e6cb11964557171ef511531fdd412c5930867ffff752c',    10000, false),
+	('warren', '32540fadef40c52354a7e6a2bf3b40b4a2e4bbaf2cb7c7a72c10a0723dc26756',    10000, false),
+	('robert', '1d937cd89b8509c7590550654089de423c2e6efc03efc201283be67443194753',    10000, false),
+	('NYSE',     '73f0211c6ba34865fd6c6b15575e647c695e26e9323dd935e8f73b2c414879ee', 0, true),
+	('coinbase', 'f80f21938e5248ec70b870ac1103d0dd01b7811550a7a5c971e1c3e85ea62492', 0, true),
+	('CME',      'e0671bd326867b636094a1eb1859a191365f916fda485c1c972642d1c1c32a9d', 0, true);
 	
 -- create portfolios table
 drop table if exists portfolios;

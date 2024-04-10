@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Assets</title>
+    <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
+    <!--https://www.w3schools.com/css/css_table.asp-->
+    <style>
+        h1, h2{
+            text-align: center;
+        }
+        .topnav{
+            background-color:darkslategray;
+        }
+        .topnav a{
+            font-size: 40px;
+            color:azure;
+            text-align: center;
+            text-decoration: none;
+            padding: 14px 16px;
+        }
+        table{
+            width: 50%;
+            margin: auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        table, th, td{
+            border: 1px solid;
+            font-size: 25px;
+        }
+        .marketLink{
+            font-size: 50px;
+            text-decoration: none;
+            background-color: darkslategrey;
+            color: azure;
+            text-align: center;
+        }
+        .marketLink a{
+            text-decoration: none;
+            color: azure;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class = "topnav">
+        <a href="/">Logout</a>
+        <a href="/deleteAccount">Delete Account</a>
+        <a href="/exchangeaccount">Profile</a>
+    </div>
+    <h1>Welcome <%=locals.user%></h1>
+    <h1>You are logged in as an exchange owner!</h1>
+    <table>
+        <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
+        <tr>
+            <th>asset</th>
+            <th>quantity</th>
+        </tr>
+        <tr>
+            <% assets.forEach(function(asset){ %>
+                <tr>
+                    <td><%= asset.asset%></td>
+                    <td><%= asset.quantity%></td>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
+    <br>
+    <div class="marketLink">
+        <a href="/market">Go to the market</a>
+    </div>
+    
+
+</body>
+</html>

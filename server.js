@@ -94,6 +94,16 @@ app.get("/account", (req, res)=>{
    
 });
 
+app.get("/exchangeaccount", (req, res)=>{
+
+    var LoggedInExchange = req.cookies["loginDetails"]["username"];
+    
+    var query = `SELECT asset FROM listings WHERE exchange='${LoggedInExchange}';`;
+    var listings = queryDB(query);
+
+    res.render("exchangeAccount", {});
+});
+
 //If the user requests to delete their account, this logic is triggered
 app.get("/deleteAccount", (req, res)=>{
     //Use the user's cookie to get their username
@@ -283,15 +293,22 @@ function validateLogin(username, password, res){
     var hash = crypto.createHash("sha256").update(password).digest("hex");
 	
     login.then(function(result){
-        if (hash  == result[0].password){
-            //login was valid
-	    //give the user a cookie containing their username, security issue
-            var login = {"username" : username}
-	        res.cookie("loginDetails", login);
-	        res.redirect("account");
+        //need to check if the entered username was valid, otherwise the server will crash
+        if(result[0]){
+
+            if (hash  == result[0].password){
+                //login was valid
+            //give the user a cookie containing their username, security issue
+                var login = {"username" : username}
+                res.cookie("loginDetails", login);
+                res.redirect("account");
+            }
+            else{
+                //login was invalid
+                res.redirect("/");
+            }
         }
         else{
-            //login was invalid
             res.redirect("/");
         }
     });
@@ -318,7 +335,7 @@ function createUser(username, password, res){
 
         //the user does not exist, create a new user
         if(!exists){
-            var query = `insert into users (username, password, balance) values ('${username}', '${hash}', 10000);`
+            var query = `insert into users (username, password, balance, isExchange) values ('${username}', '${hash}', 10000, false);`
             var insertUser = queryDB(query);
         }
 
