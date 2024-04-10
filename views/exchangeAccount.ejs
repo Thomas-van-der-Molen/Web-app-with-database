@@ -41,8 +41,12 @@
             text-decoration: none;
             color: azure;
         }
+        form{
+            text-align: center;
+        }
         
     </style>
+    <script src="../server.js"></script>
 </head>
 <body>
     <div class = "topnav">
@@ -57,17 +61,30 @@
     <table>
         <tr>
             <th>Name</th>
+            
         </tr>
         <tr>
             <% listings.forEach(function(listing){ %>
                 <tr>
                     <td><%= listing.asset%></td>
+                    <form id="deleteListing" action="/deletelisting" method="POST">
+                        <td><input type="submit" value="delete"></td>
+                        <input hidden type="text" name="listing" value=<%= listing.asset%>>
+                    </form>
                 </tr>
             <% }) %>
         </tr>
     </table>
     <br>
-    
+
+    <h2>Add a new Listing</h2>
+    <form id="newListing">
+        <label for="assetName">Asset Symbol</label>
+        <input type="text" name="assetName">
+
+        <label for="assetPrice">Price</label>
+        <input type="number" name="AssetPrice">
+    </form>
 
 </body>
 </html>

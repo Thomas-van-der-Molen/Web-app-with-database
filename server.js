@@ -75,6 +75,20 @@ app.get('/', (req, res)=>{
 
 });
 
+app.post("/deletelisting", (req,res)=>{
+
+    var listingToDelete = req.body.listing;
+    var currentExchange = req.cookies["loginDetails"]["username"];
+
+    //delete the appropriate asset
+    var query = `DELETE FROM listings WHERE exchange='${currentExchange}' AND asset='${listingToDelete}';`;
+    var deleteListing = queryDB(query);
+    deleteListing.then(function(result){
+
+        res.redirect("/exchangeaccount");
+    });
+});
+
 //After the user has logged in, they can view the account page
 app.get("/account", (req, res)=>{
    
@@ -102,8 +116,8 @@ app.get("/exchangeaccount", (req, res)=>{
     var listings = queryDB(query);
 
     Promise.all([listings]).then(function(result){
-        
-        res.render("exchangeAccount", {listings: result[0]});
+
+        res.render("exchangeAccount", {user: LoggedInExchange, listings: result[0]});
     });
 
 });
