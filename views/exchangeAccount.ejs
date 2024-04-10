@@ -52,25 +52,21 @@
     </div>
     <h1>Welcome <%=locals.user%></h1>
     <h1>You are logged in as an exchange owner!</h1>
+    <h2>These are the assets on your exchange:</h2>
+    <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
     <table>
-        <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
         <tr>
-            <th>asset</th>
-            <th>quantity</th>
+            <th>Name</th>
         </tr>
         <tr>
-            <% assets.forEach(function(asset){ %>
+            <% listings.forEach(function(listing){ %>
                 <tr>
-                    <td><%= asset.asset%></td>
-                    <td><%= asset.quantity%></td>
+                    <td><%= listing.asset%></td>
                 </tr>
             <% }) %>
         </tr>
     </table>
     <br>
-    <div class="marketLink">
-        <a href="/market">Go to the market</a>
-    </div>
     
 
 </body>

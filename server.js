@@ -101,7 +101,11 @@ app.get("/exchangeaccount", (req, res)=>{
     var query = `SELECT asset FROM listings WHERE exchange='${LoggedInExchange}';`;
     var listings = queryDB(query);
 
-    res.render("exchangeAccount", {});
+    Promise.all([listings]).then(function(result){
+        
+        res.render("exchangeAccount", {listings: result[0]});
+    });
+
 });
 
 //If the user requests to delete their account, this logic is triggered
@@ -291,17 +295,29 @@ function validateLogin(username, password, res){
     var query = "SELECT password FROM users WHERE username='"+username+"';";
     var login = queryDB(query);
     var hash = crypto.createHash("sha256").update(password).digest("hex");
+    
+    query = `SELECT isExchange FROM users WHERE username='${username}';`;
+    var isExchange = queryDB(query);
 	
-    login.then(function(result){
+    Promise.all([login, isExchange]).then(function(result){
         //need to check if the entered username was valid, otherwise the server will crash
-        if(result[0]){
-
-            if (hash  == result[0].password){
+        if(result[0][0]){
+            if (hash  == result[0][0].password){
                 //login was valid
-            //give the user a cookie containing their username, security issue
+                //give the user a cookie containing their username, security issue
                 var login = {"username" : username}
                 res.cookie("loginDetails", login);
-                res.redirect("account");
+
+                //if the user is an exchange owner or a regular user, server them the appropriate page
+                if(result[1][0].isExchange == 1){
+                    //give exchange page
+                    
+                    res.redirect("/exchangeaccount");
+                }
+                else{
+                    //user is regular user, give regular account page
+                    res.redirect("account");
+                }
             }
             else{
                 //login was invalid
@@ -309,6 +325,7 @@ function validateLogin(username, password, res){
             }
         }
         else{
+            //the username that was entered is not valid
             res.redirect("/");
         }
     });
