@@ -46,8 +46,8 @@ async function queryDB(query){
     try{
         conn = await maria.createConnection({
             host : 'localhost',
-            user : 'root',
-            password : 'root',
+            user : process.env.databaseUser,
+            password : process.env.databasePass,
             database : 'awesomeassets'
         });
 
