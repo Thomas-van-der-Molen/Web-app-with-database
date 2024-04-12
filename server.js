@@ -254,7 +254,7 @@ app.post("/trade", (req, res)=>{
     union
     select symbol, price from cryptocurrencies
     union
-    select name, price from commodities) r1
+    select name as symbol, price from commodities) r1
     where r1.symbol='${asset}';`;
     var price = queryDB(query);
 

@@ -39,7 +39,7 @@ insert into listings (exchange, asset) values
 ('coinbase', 'eth'),
 ('coinbase', 'doge'),
 ('CME', 'gold'),
-('CME', 'aaple juice'),
+('CME', 'aaple-juice'),
 ('CME', 'soy'),
 ('CME', 'oil');
 
@@ -121,4 +121,4 @@ insert into commodities (name, price, commodity_type, high_price, low_price) val
 ('oil', 8.67, 'hard', 5.30, 1.33),
 ('soy', 9.25, 'soft', 6.93, 1.5),
 ('gold', 867.53, 'hard', 86753.09, 8.67),
-('aaple juice', 0.10, 'soft', 5.00, 0.05);
+('aaple-juice', 0.10, 'soft', 5.00, 0.05);
