@@ -247,6 +247,11 @@ app.post("/trade", (req, res)=>{
 
 //helper functions for the /trade post request
 function buyStock(asset, quantity, cost, balance, numberOwned, LoggedInUser){
+
+    //check that the amout to buy was not negative
+    if(quantity <= 0){
+        return;
+    }
     
     if(cost < balance){
         //user can afford to buy
@@ -274,6 +279,11 @@ function buyStock(asset, quantity, cost, balance, numberOwned, LoggedInUser){
 
 }
 function sellStock(asset, quantity, cost, balance, numberOwned, LoggedInUser){
+
+    //check that the quantity was not negative
+    if(quantity <=0){
+        return;
+    }
     
     if(quantity <= numberOwned){
         //user has the assets to sell
