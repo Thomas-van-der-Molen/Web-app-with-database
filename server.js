@@ -185,7 +185,9 @@ app.post("/login", (req, res)=>{
     }
     else{
         //create account
-        createUser(inputUsername, inputPassword, res);
+        var isExchange = req.body.createNewExchangeAccount;
+        //console.log(req.body);
+        createUser(inputUsername, inputPassword, res, isExchange);
     }
 });
 
@@ -379,10 +381,17 @@ function validateLogin(username, password, res){
 }
 
 //Helper function to create a user if the user wants to make a new account
-function createUser(username, password, res){
+function createUser(username, password, res, isExchange){
 
+    //determine whether the user create a regular account or an exchange owner account
+    if(isExchange){
+        isExchange='true';
+    }
+    else{
+        isExchange='false';
+    }
+    
     //first, check if the user already exists
-
     var users = queryDB("SELECT username FROM users;");
     var hash = crypto.createHash("sha256").update(password).digest("hex");
     users.then(function(result){
@@ -399,7 +408,7 @@ function createUser(username, password, res){
 
         //the user does not exist, create a new user
         if(!exists){
-            var query = `insert into users (username, password, balance, isExchange) values ('${username}', '${hash}', 10000, false);`
+            var query = `insert into users (username, password, balance, isExchange) values ('${username}', '${hash}', 10000, ${isExchange});`
             var insertUser = queryDB(query);
         }
 
