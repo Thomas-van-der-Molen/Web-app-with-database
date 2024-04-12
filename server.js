@@ -89,6 +89,7 @@ app.post("/deletelisting", (req,res)=>{
     });
 });
 
+
 //After the user has logged in, they can view the account page
 app.get("/account", (req, res)=>{
    
@@ -186,6 +187,28 @@ app.post("/login", (req, res)=>{
         //create account
         createUser(inputUsername, inputPassword, res);
     }
+});
+
+app.post("/searchAsset", (req,res)=>{
+    var searchValue = req.body.searchValue;
+    //console.log(searchValue);
+
+    //problem: the user is searching for an asset, but there is no way to search all assets simply
+    //maybe not a problem?
+    //just do the query 3 times
+    var query = `SELECT * FROM stocks WHERE symbol like '%${searchValue}%';`;
+    var stockResults = queryDB(query);
+
+    query = `SELECT * FROM cryptocurrencies WHERE symbol like '%${searchValue}%';`;
+    var cryptoResults = queryDB(query);
+
+    query = `SELECT * FROM commodities WHERE name like '%${searchValue}%';`;
+    var commodityResults = queryDB(query);
+
+    Promise.all([stockResults, cryptoResults, commodityResults]).then(function(result){
+        res.render("market", {stocks:result[0], cryptos:result[1], 
+                            commodities:result[2]});
+    });
 });
 
 //When the user submits the form for a trade, this logic triggers

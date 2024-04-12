@@ -48,61 +48,28 @@
     </div>
     
     <h1>Market</h1>
-    
-    
-    <!-- <div class="ExchangeFilters">
-        <form>
-            https://www.freecodecamp.org/news/html-select-tag-how-to-make-a-dropdown-menu-or-combo-list/
-            <label for = "Exchanges">Exchange</label>
-            <select name = "Exchanges">
-                <option value="any">any</option>
-                <% exchanges.forEach(function(exchange){ %>
-                    <option value = "an exchange"><%= exchange.exchange%></option>
-                    <% }) %>
-            </select>
-            
-            <label for = "Asset Type">Asset Type</label>
-            <select name = "Asset Type">
-                <option value="any">any</option>
-                <option value = "Stocks">Stocks</option>
-                <option value = "Cryptos">Cryptos</option>
-                <option value = "Commodities">Commodities</option>
-            </select>
-
-            <input type="text">
-            <input type="submit" name="search_button" value="search">
-        </form>
-    </div> -->
 
     
     <br>
 
 
-    <!-- <table>
-        https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html
-        <tr>
-            <th>Exchange</th>
-            <th>Asset</th>
-        </tr>
-        <tr>
-            <% listings.forEach(function(listing){ %>
-                <tr>
-                    <td><%= listing.exchange%></td>
-                    <td><%= listing.asset%></td>
-                </tr>
-            <% }) %>
-        </tr>
-    </table> -->
+    <h2>Search for an asset</h2>
+    <form id="searchForAsset" action="/searchAsset" method="post">
+        <input type="text" name="searchValue">
+        <input type="submit" value="search">
+    </form>
+    
 
+    <% if(locals.listings){ %>
     <h1>Make a trade</h1>
     <form id="trade" action="/trade" method="post">
         <label for = "asset">Asset</label>
         <select name = "asset">
-            <% listings.forEach(function(listing) {%>
+            <% locals.listings.forEach(function(listing) {%>
                 <option value = <%=listing.asset%>> <%=listing.asset%> </option>
                 <% }) %>
-        </select>
-        
+            </select>
+            
         <label for = "quantity">quantity</label>
         <input type="number" name = "quantity" value="0">
         
@@ -113,8 +80,10 @@
         
         <input type="submit" value="place order">
     </form>
-
+    <% } %>
+    
     <!--Stocks-->
+    <% if(locals.stocks.length != 0){ %>
     <h2>Stocks</h2>
     <table>
         <tr>
@@ -126,7 +95,7 @@
             <th>Low Price</th>
         </tr>
         <tr>
-            <% stocks.forEach(function(stock){ %>
+            <% locals.stocks.forEach(function(stock){ %>
                 <tr>
                     <td><%= stock.symbol%></td>
                     <td><%= stock.price%></td>
@@ -138,9 +107,11 @@
             <% }) %>
         </tr>
     </table>
+    <% } %>
     <br>
 
     <!--Cryptos-->
+    <% if(locals.cryptos.length != 0){ %>
     <h2>Cryptocurrencies</h2>
     <table>
         <tr>
@@ -152,7 +123,7 @@
             <th>Low Price</th>
         </tr>
         <tr>
-            <% cryptos.forEach(function(crypto){ %>
+            <% locals.cryptos.forEach(function(crypto){ %>
                 <tr>
                     <td><%= crypto.symbol%></td>
                     <td><%= crypto.price%></td>
@@ -164,9 +135,11 @@
             <% }) %>
         </tr>
     </table>
+    <% } %>
     <br>
 
     <!--Commodities-->
+    <% if(locals.commodities.length != 0){ %>
     <h2>Commodities</h2>
     <table>
         <tr>
@@ -177,7 +150,7 @@
             <th>Low Price</th>
         </tr>
         <tr>
-            <% commodities.forEach(function(commodity){ %>
+            <% locals.commodities.forEach(function(commodity){ %>
                 <tr>
                     <td><%= commodity.name%></td>
                     <td><%= commodity.price%></td>
@@ -188,6 +161,7 @@
             <% }) %>
         </tr>
     </table>
+    <% } %>
 
 </body>
 </html>
