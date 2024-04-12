@@ -21,7 +21,7 @@
         }
         form{
             text-align: center;
-            
+
         }
         table{
             margin-left: auto;
@@ -31,23 +31,25 @@
         table, th, td{
             border: 1px solid;
         }
-        </style>
+    </style>
 </head>
 <body>
     <div class = "topnav">
-        <a href="/signup">Create account</a>
+        <a href="/signin">Log in</a>
     </div>
 
     <h1> Awesome Assets </h1>
-    <h1>Sign in</h1>
-    
+    <h1>Sign up</h1>
     <!--login form-->
-    <form id = "login" action = "/login" method="POST">
+    <form id = "signUp" action = "/login" method="POST">
         <label for="username">Username:</label>
         <input type="text" id = 'username' name="username"><br>
         <label for="password">Password:</label>
         <input type="password" id = 'password' name="password"><br>
-        <input type="submit" name="loginbutton" value = "Login">
+        <input type="submit" name="loginbutton" value = "create account">
+
+        <label for="createNewExchangeAccount">Sign up as an exchange owner</label>
+        <input type="checkbox" name="createNewExchangeAccount">
     </form>
 
     <div>
@@ -55,22 +57,5 @@
         <p>Disclaimer: this site uses cookies</p>
     </div>
 
-    <!--table of users-->
-    <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
- <!--    
-    <br><br>
-    <table>
-        <tr>
-            <th>username</th>
-            <th>password</th>
-        </tr>
-        <% users.forEach(function(user){ %>
-            <tr>
-                <td><%= user.username%></td>
-                <td><%= user.password%></td>
-            </tr>
-        <% }) %>
-    </table>    
--->
 </body>
 </html>

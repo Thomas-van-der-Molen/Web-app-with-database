@@ -65,6 +65,12 @@ async function queryDB(query){
 //The home page of the site
 //Presented when the user logs out or visits for the first time
 app.get('/', (req, res)=>{
+    
+    //redirect to signin
+    res.redirect("/signin");
+});
+
+app.get("/signin", (req,res)=>{
     //clear the cookie in case the user was logged in
     res.clearCookie("loginDetails");
 
@@ -72,9 +78,18 @@ app.get('/', (req, res)=>{
     var users = queryDB("select * from users;");
     users.then(function(result){
         res.render('index', {users:  result});
-    })
+    });
 
 });
+
+app.get("/signup", (req,res)=>{
+
+    var users = queryDB("select * from users;");
+    users.then(function(result){
+        
+        res.render("signup");
+    });
+})
 
 app.post("/deletelisting", (req,res)=>{
 
