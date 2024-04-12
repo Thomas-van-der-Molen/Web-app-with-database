@@ -28,6 +28,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const crypto = require('crypto');
 var cookieParser = require('cookie-parser');
+const { start } = require('repl');
 
 const app = express();
 var upload = multer();
@@ -48,7 +49,7 @@ async function queryDB(query){
             host : 'localhost',
             user : process.env.databaseUser,
             password : process.env.databasePass,
-            database : 'awesomeassets'
+            database : 'aa'
         });
 
        var result = await conn.query(query);
@@ -133,6 +134,7 @@ app.get("/deleteAccount", (req, res)=>{
     //delete the user from the database
     //NEED TO FIX THIS - only the user's entry in the users table is deleted
     //All the information about their portfolio will persist though
+    //fixed with a foreign key constraint :)
     var query = `DELETE FROM users WHERE username='${LoggedInUser}';`
     var deleteUser = queryDB(query);
     deleteUser.then(function(result){
@@ -384,11 +386,14 @@ function validateLogin(username, password, res){
 function createUser(username, password, res, isExchange){
 
     //determine whether the user create a regular account or an exchange owner account
+    var startingCapital;
     if(isExchange){
         isExchange='true';
+        startingCapital=0;
     }
     else{
         isExchange='false';
+        startingCapital=5000000;
     }
     
     //first, check if the user already exists
@@ -408,7 +413,7 @@ function createUser(username, password, res, isExchange){
 
         //the user does not exist, create a new user
         if(!exists){
-            var query = `insert into users (username, password, balance, isExchange) values ('${username}', '${hash}', 10000, ${isExchange});`
+            var query = `insert into users (username, password, balance, isExchange) values ('${username}', '${hash}', ${startingCapital}, ${isExchange});`
             var insertUser = queryDB(query);
         }
 

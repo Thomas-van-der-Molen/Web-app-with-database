@@ -1,29 +1,9 @@
-
--- create exchanges table
-drop table if exists listings;
-
-create table listings(
-	exchange VARCHAR(20),
-	asset VARCHAR(20)
-);
-
-insert into listings (exchange, asset) values
-('NYSE', 'aapl'),
-('SSE', 'msft'),
-('NASDAQ', 'nvda'),
-('coinbase', 'btc'),
-('cryptocom', 'eth'),
-('binance', 'doge'),
-('CME', 'gold'),
-('TOCOM', 'soy'),
-('CCX', 'oil');
-
 -- create users table
 drop table if exists users;
 
 create table users(
 	username VARCHAR(40) primary key,
-	password VARCHAR(64) not null,
+	password VARCHAR(64) NOT NULL,
 	balance decimal(10,2),
 	isExchange BOOLEAN
 );
@@ -38,13 +18,44 @@ insert into users (username, password, balance, isExchange) values
 	('coinbase', 'f80f21938e5248ec70b870ac1103d0dd01b7811550a7a5c971e1c3e85ea62492', 0, true),
 	('CME',      'e0671bd326867b636094a1eb1859a191365f916fda485c1c972642d1c1c32a9d', 0, true);
 	
+
+-- create exchanges table
+drop table if exists listings;
+
+create table listings(
+	asset VARCHAR(20) primary key,
+	exchange VARCHAR(20),
+	CONSTRAINT fk_exchange FOREIGN KEY (exchange) REFERENCES users (username)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
+
+insert into listings (exchange, asset) values
+('NYSE', 'aapl'),
+('NYSE', 'msft'),
+('NYSE', 'nvda'),
+('coinbase', 'btc'),
+('coinbase', 'aave'),
+('coinbase', 'eth'),
+('coinbase', 'doge'),
+('CME', 'gold'),
+('CME', 'aaple juice'),
+('CME', 'soy'),
+('CME', 'oil');
+
 -- create portfolios table
 drop table if exists portfolios;
 
 create table portfolios(
 	username VARCHAR(40),
-	asset VARCHAR(30),
-	quantity int
+	asset VARCHAR(20),
+	quantity int,
+	CONSTRAINT fk_uname FOREIGN KEY (username) REFERENCES users (username)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+	CONSTRAINT fk_asset FOREIGN KEY (asset) REFERENCES listings (asset)
+	ON DELETE CASCADE 
+	ON UPDATE CASCADE
 );
 
 insert into portfolios (username, asset, quantity) values
@@ -57,6 +68,8 @@ insert into portfolios (username, asset, quantity) values
 ('thomas', 'doge', 5),
 ('thomas', 'nvda', 3),
 ('thomas', 'soy', 11);
+
+
 
 -- create stocks table
 drop table if exists stocks;
@@ -73,9 +86,7 @@ create table stocks (
 insert into stocks (symbol, price, dividend, market_cap, high_price, low_price) values
 ('msft', 999.3, 0, 3426.99, 999.3, 121.5),
 ('nvda', 76.3, .5, 978.2, 315.5, 10.01),
-('aapl', 100.1, .1, 1000.00, 106.9, 97.9),
-('tsla', 63.76, .9, 80.86, 73.31, 13.27),
-('meta', 86.75, 0, 30.09, 1234.56, 7.89);
+('aapl', 100.1, .1, 1000.00, 106.9, 97.9);
 
 -- create cryptocurrencies table
 drop table if exists cryptocurrencies;
@@ -93,8 +104,7 @@ insert into cryptocurrencies (symbol, price, coin_type, market_cap, high_price, 
 ('btc', 100000, 'pow', 6.7, 65432.2, .56),
 ('eth', 675.00, 'pos', 2.1, 533.0, 461.0),
 ('doge', .56, 'pow', 0.7, 1.02, 0.01),
-('ftm', 910.23, 'pos', 4567.89, 101112.13, 14.15),
-('bnb', 167.18, 'pos', 1920.21, 2223.24, 25.26);
+('aave', 12.67, 'pow', 1.1, 15.55, 5.94);
 
 -- create commodities table
 drop table if exists commodities;
@@ -111,5 +121,4 @@ insert into commodities (name, price, commodity_type, high_price, low_price) val
 ('oil', 8.67, 'hard', 5.30, 1.33),
 ('soy', 9.25, 'soft', 6.93, 1.5),
 ('gold', 867.53, 'hard', 86753.09, 8.67),
-('corn', 99.98, 'soft', 976.95, 9.43),
-('gas', 87.86, 'hard', 858.40, 83.82);
+('aaple juice', 0.10, 'soft', 5.00, 0.05);
