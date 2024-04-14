@@ -20,6 +20,8 @@
 //https://stackoverflow.com/questions/35737482/multiple-submit-buttons-html-express-node-js
 //https://mariadb.com/kb/en/getting-started-with-the-nodejs-connector/
 //https://www.geeksforgeeks.org/node-js-hash-digest-method/
+//https://stackoverflow.com/questions/44657829/css-file-blocked-mime-type-mismatch-x-content-type-options-nosniff
+//https://stackoverflow.com/questions/63634932/mime-type-mismatch-in-express
 
 //dependencies
 const express = require('express');
@@ -37,6 +39,7 @@ var upload = multer();
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cookieParser());
+app.use("/public", express.static("/formScript.js"));
 
 app.set("view engine", "ejs");
 

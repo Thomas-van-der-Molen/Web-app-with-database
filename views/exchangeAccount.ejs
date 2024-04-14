@@ -46,7 +46,6 @@
         }
         
     </style>
-    <script src="../server.js"></script>
 </head>
 <body>
     <div class = "topnav">
@@ -78,13 +77,64 @@
     <br>
 
     <h2>Add a new Listing</h2>
-    <form id="newListing">
-        <label for="assetName">Asset Symbol</label>
-        <input type="text" name="assetName">
+    <form id="createNewListing" action="/newListing" method="POST">
+        <select name="assetCategory" id="assetCategory">
+            <option value = "Stock" onclick="typeChanged()">Stock</option>
+            <option value = "Cryptocurrency" onclick="typeChanged()">Cryptocurrency</option>
+            <option value = "Commodity" onclick="typeChanged()">Commodity</option>
+        </select>
 
-        <label for="assetPrice">Price</label>
-        <input type="number" name="AssetPrice">
+        <!--
+            Stock: Symbol
+            Crypto: Symbol
+            Commodity: Name
+        -->
+        <label for="input1" id="input1Label">Symbol</label>
+        <input type="text" name="input1" id="input1">
+
+        <!--
+            Stock: price
+            Crypto: price
+            Commodity: price
+        -->
+        <label for="input2" id="input2Label">Price</label>
+        <input type="number" name="input2" id="input2">
+
+        <!--
+            Stock: dividend
+            Crypto: coin_type
+            commodity: commodity_type
+        -->
+        <label for="input3" id="input3Label">Dividend</label>
+        <input type="number" name="input3" id="input3">
+
+        <!--
+            Stock: market_cap
+            Crypto: market_cap
+            Commodity: high_price
+        -->
+        <label for="input4" id="input4Label">market_cap</label>
+        <input type="number" name="input4" id="input4">
+
+        <!--
+            Stock: high_price
+            Crypto: high_price
+            commodity: low_price
+        -->
+        <label for="input5" id="input5Label">high_price</label>
+        <input type="number" name="input5" id="input5">
+
+        <!--
+            Stock: low_price
+            Crypto: low_price
+            Commodity: none
+        -->
+        <label for="input6" id="input6Label">low_price</label>
+        <input type="number" name="input6" id="input6">
+
+        <input type="submit" value="submit">
     </form>
 
+    <script src="/formScript.js"></script>
 </body>
 </html>
