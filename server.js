@@ -22,6 +22,8 @@
 //https://www.geeksforgeeks.org/node-js-hash-digest-method/
 //https://stackoverflow.com/questions/44657829/css-file-blocked-mime-type-mismatch-x-content-type-options-nosniff
 //https://stackoverflow.com/questions/63634932/mime-type-mismatch-in-express
+//https://stackoverflow.com/questions/7463658/how-to-trim-a-string-to-n-chars-in-javascript
+//https://www.geeksforgeeks.org/how-to-remove-spaces-from-a-string-using-javascript/
 
 //dependencies
 const express = require('express');
@@ -150,6 +152,16 @@ app.post("/newListing", (req,res)=>{
 
 function addStock(symbol, price, dividend, market_cap, high_price, low_price, exchange){
 
+    //remove spaces from symbol name if there are any
+    symbol = symbol.split(" ").join("");
+    //limit the length of symbol
+    symbol = symbol.substring(0, 5);
+
+    if(!symbol || !price || !dividend || !market_cap || !high_price || !low_price){
+        //all the inputs must be filled for the form to work
+        return;
+    }
+
     var query = `INSERT INTO stocks VALUES ('${symbol}', ${price}, ${dividend}, ${market_cap}, ${high_price}, ${low_price});`;
     var insertStock = queryDB(query);
 
@@ -163,6 +175,13 @@ function addStock(symbol, price, dividend, market_cap, high_price, low_price, ex
 
 function addCrypto(symbol, price, coin_type, market_cap, high_price, low_price, exchange){
 
+    symbol = symbol.split(" ").join("");
+    symbol = symbol.substring(0,5);
+    if(!symbol || !price || !coin_type || !market_cap || !high_price || !low_price){
+        //all the inputs must be filled for the form to work
+        return;
+    }
+
     var query = `INSERT INTO cryptocurrencies VALUES ('${symbol}', ${price}, '${coin_type}', ${market_cap}, ${high_price}, ${low_price});`;
     var insertCrypto = queryDB(query);
 
@@ -175,6 +194,13 @@ function addCrypto(symbol, price, coin_type, market_cap, high_price, low_price, 
 }
 
 function addCommodity(name, price, commodity_type, high_price, low_price, exchange){
+
+    name = name.split(" ").join("");
+    name = name.substring(0,5);
+    if(!name || !price || !commodity_type || !high_price || !low_price){
+        //all the inputs must be filled for the form to work
+        return;
+    }
 
     var query = `INSERT INTO commodities VALUES ('${name}', ${price}, '${commodity_type}', ${high_price}, ${low_price});`;
     var insertCommodity = queryDB(query);
