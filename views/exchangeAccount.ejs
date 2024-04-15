@@ -6,6 +6,7 @@
     <title>Awesome Assets</title>
     <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
     <!--https://www.w3schools.com/css/css_table.asp-->
+    <!-- https://www.w3schools.com/tags/att_input_maxlength.asp -->
     <style>
         h1, h2{
             text-align: center;
@@ -90,7 +91,7 @@
             Crypto: Symbol
             Commodity: Name
         -->
-        <label for="input1" id="input1Label">Symbol</label>
+        <label for="input1" id="input1Label" maxlength="5">Symbol</label>
         <input type="text" name="input1" id="input1">
 
         <!--
@@ -98,7 +99,7 @@
             Crypto: price
             Commodity: price
         -->
-        <label for="input2" id="input2Label">Price</label>
+        <label for="input2" id="input2Label" step=".01">Price</label>
         <input type="number" name="input2" id="input2">
 
         <!--
@@ -106,7 +107,7 @@
             Crypto: coin_type
             commodity: commodity_type
         -->
-        <label for="input3" id="input3Label">Dividend</label>
+        <label for="input3" id="input3Label" step=".01">Dividend</label>
         <input type="number" name="input3" id="input3">
 
         <!--
@@ -114,7 +115,7 @@
             Crypto: market_cap
             Commodity: high_price
         -->
-        <label for="input4" id="input4Label">market_cap</label>
+        <label for="input4" id="input4Label" step=".01">market_cap</label>
         <input type="number" name="input4" id="input4">
 
         <!--
@@ -122,7 +123,7 @@
             Crypto: high_price
             commodity: low_price
         -->
-        <label for="input5" id="input5Label">high_price</label>
+        <label for="input5" id="input5Label" step=".01">high_price</label>
         <input type="number" name="input5" id="input5">
 
         <!--
@@ -130,7 +131,7 @@
             Crypto: low_price
             Commodity: none
         -->
-        <label for="input6" id="input6Label">low_price</label>
+        <label for="input6" id="input6Label" step=".01">low_price</label>
         <input type="number" name="input6" id="input6">
 
         <input type="submit" value="submit">

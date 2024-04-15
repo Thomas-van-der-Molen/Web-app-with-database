@@ -38,6 +38,7 @@ function changeFormToCryptocurrency(){
     
     document.getElementById("input3Label").innerHTML = "coin_type";
     document.getElementById("input3").type = "text";
+    document.getElementById("input3").maxlength="3";
 
     document.getElementById("input4Label").innerHTML = "market_cap";
     document.getElementById("input5Label").innerHTML = "high_price";
@@ -53,6 +54,7 @@ function changeFormToCommodity(){
     
     document.getElementById("input3Label").innerHTML = "commodity_type";
     document.getElementById("input3").type = "text";
+    document.getElementById("input3").maxlength="3";
 
     document.getElementById("input4Label").innerHTML = "high_price";
     document.getElementById("input5Label").innerHTML = "low_price";

@@ -23,11 +23,10 @@ insert into users (username, password, balance, isExchange) values
 drop table if exists listings;
 
 create table listings(
-	asset VARCHAR(20) primary key,
 	exchange VARCHAR(20),
+	asset VARCHAR(20) primary key,
 	CONSTRAINT fk_exchange FOREIGN KEY (exchange) REFERENCES users (username)
 	ON DELETE CASCADE
-	ON UPDATE CASCADE
 );
 
 insert into listings (exchange, asset) values

@@ -31,6 +31,7 @@ const multer = require('multer');
 const crypto = require('crypto');
 var cookieParser = require('cookie-parser');
 const { start } = require('repl');
+const { promiseHooks } = require('v8');
 
 const app = express();
 var upload = multer();
@@ -108,6 +109,83 @@ app.post("/deletelisting", (req,res)=>{
     });
 });
 
+app.post("/newListing", (req,res)=>{
+    
+    var assetCategory = req.body.assetCategory;
+    if(assetCategory == "Stock"){
+        //the exchange owner is creating a new stock listing
+        addStock(req.body.input1,
+                req.body.input2,
+                req.body.input3,
+                req.body.input4,
+                req.body.input5,
+                req.body.input6,
+                req.cookies["loginDetails"]["username"]
+        );
+    }
+    else if(assetCategory == "Cryptocurrency"){
+        //the exchange owner is creating a new cryptocurrency listing
+        addCrypto(req.body.input1,
+                req.body.input2,
+                req.body.input3,
+                req.body.input4,
+                req.body.input5,
+                req.body.input6,
+                req.cookies["loginDetails"]["username"]
+        );
+    }
+    else if(assetCategory == "Commodity"){
+        //the exchange owner is creating a new Commodity listing
+        addCommodity(req.body.input1,
+                    req.body.input2,
+                    req.body.input3,
+                    req.body.input4,
+                    req.body.input5,
+                    req.cookies["loginDetails"]["username"]
+        );
+    }
+    
+    res.redirect("/exchangeaccount");
+});
+
+function addStock(symbol, price, dividend, market_cap, high_price, low_price, exchange){
+
+    var query = `INSERT INTO stocks VALUES ('${symbol}', ${price}, ${dividend}, ${market_cap}, ${high_price}, ${low_price});`;
+    var insertStock = queryDB(query);
+
+    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
+    var insertListing = queryDB(query);
+    Promise.all([insertStock, insertListing]).then(function(result){
+        return;
+    });
+
+}
+
+function addCrypto(symbol, price, coin_type, market_cap, high_price, low_price, exchange){
+
+    var query = `INSERT INTO cryptocurrencies VALUES ('${symbol}', ${price}, '${coin_type}', ${market_cap}, ${high_price}, ${low_price});`;
+    var insertCrypto = queryDB(query);
+
+    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
+    var insertListing = queryDB(query);
+
+    Promise.all([insertCrypto, insertListing]).then(function(result){
+        return;
+    });
+}
+
+function addCommodity(name, price, commodity_type, high_price, low_price, exchange){
+
+    var query = `INSERT INTO commodities VALUES ('${name}', ${price}, '${commodity_type}', ${high_price}, ${low_price});`;
+    var insertCommodity = queryDB(query);
+
+    query = `INSERT INTO listings VALUES ('${exchange}', '${name}');`;
+    var insertListing = queryDB(query);
+
+    Promise.all([insertCommodity, insertListing]).then(function(result){
+        return;
+    });
+}
 
 //After the user has logged in, they can view the account page
 app.get("/account", (req, res)=>{
