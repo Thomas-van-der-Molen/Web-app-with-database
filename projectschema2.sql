@@ -79,7 +79,9 @@ create table stocks (
 	dividend decimal(10,2),
 	market_cap decimal(10,2),
 	high_price decimal(10,2),
-	low_price decimal(10,2)
+	low_price decimal(10,2),
+	CONSTRAINT fk_stock_symbol FOREIGN KEY (symbol) REFERENCES listings (asset)
+	ON DELETE CASCADE
 );
 
 insert into stocks (symbol, price, dividend, market_cap, high_price, low_price) values
@@ -96,7 +98,9 @@ create table cryptocurrencies(
 	coin_type VARCHAR(3),
 	market_cap decimal(10,2),
 	high_price decimal(10,2),
-	low_price decimal(10,2)
+	low_price decimal(10,2),
+	CONSTRAINT fk_crypto_symbol FOREIGN KEY (symbol) REFERENCES listings (asset)
+	ON DELETE CASCADE
 );
 
 insert into cryptocurrencies (symbol, price, coin_type, market_cap, high_price, low_price) values 
@@ -113,7 +117,9 @@ create table commodities (
 	price decimal(10,2),
 	commodity_type VARCHAR(4),
 	high_price decimal(10,2),
-	low_price decimal(10,2)
+	low_price decimal(10,2),
+	CONSTRAINT fk_name FOREIGN KEY (name) REFERENCES listings (asset)
+	ON DELETE CASCADE
 );
 
 insert into commodities (name, price, commodity_type, high_price, low_price) values 

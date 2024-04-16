@@ -24,6 +24,7 @@
 //https://stackoverflow.com/questions/63634932/mime-type-mismatch-in-express
 //https://stackoverflow.com/questions/7463658/how-to-trim-a-string-to-n-chars-in-javascript
 //https://www.geeksforgeeks.org/how-to-remove-spaces-from-a-string-using-javascript/
+//https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
 //dependencies
 const express = require('express');
@@ -32,8 +33,11 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const crypto = require('crypto');
 var cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+dotenv.config();
 const { start } = require('repl');
 const { promiseHooks } = require('v8');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 var upload = multer();
@@ -45,6 +49,30 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
+
+function generateAccessToken(username){
+    return jwt.sign(username, process.env.token_secret, { expiresIn: '1800s' });
+}
+
+function authenticateToken(req, res, next){
+    const authHeader = req.headers['authorization']
+    //const token = authHeader && authHeader.split(' ')[1]
+
+    const token = req.cookies['token'];
+
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.token_secret, (err, user) => {
+
+        if (err) return res.sendStatus(403)
+
+        if(user["name"] != req.cookies["loginDetails"]["username"]){
+            return res.sendStatus(403);
+        }
+
+        next()
+    })
+}
 
 //function which will accept a string formatted as a query as input
 //The function will then connect to the local database and execute the query
@@ -79,6 +107,7 @@ app.get('/', (req, res)=>{
 app.get("/signin", (req,res)=>{
     //clear the cookie in case the user was logged in
     res.clearCookie("loginDetails");
+    res.clearCookie("token");
 
     //get the users in the database, to show available users to 
     var users = queryDB("select * from users;");
@@ -97,7 +126,7 @@ app.get("/signup", (req,res)=>{
     });
 })
 
-app.post("/deletelisting", (req,res)=>{
+app.post("/deletelisting", authenticateToken, (req,res)=>{
 
     var listingToDelete = req.body.listing;
     var currentExchange = req.cookies["loginDetails"]["username"];
@@ -111,7 +140,7 @@ app.post("/deletelisting", (req,res)=>{
     });
 });
 
-app.post("/newListing", (req,res)=>{
+app.post("/newListing", authenticateToken, (req,res)=>{
     
     var assetCategory = req.body.assetCategory;
     if(assetCategory == "Stock"){
@@ -161,12 +190,12 @@ function addStock(symbol, price, dividend, market_cap, high_price, low_price, ex
         //all the inputs must be filled for the form to work
         return;
     }
-
+    
+    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
+    var insertListing = queryDB(query);
     var query = `INSERT INTO stocks VALUES ('${symbol}', ${price}, ${dividend}, ${market_cap}, ${high_price}, ${low_price});`;
     var insertStock = queryDB(query);
 
-    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
-    var insertListing = queryDB(query);
     Promise.all([insertStock, insertListing]).then(function(result){
         return;
     });
@@ -181,12 +210,12 @@ function addCrypto(symbol, price, coin_type, market_cap, high_price, low_price, 
         //all the inputs must be filled for the form to work
         return;
     }
-
+    
+    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
+    var insertListing = queryDB(query);
     var query = `INSERT INTO cryptocurrencies VALUES ('${symbol}', ${price}, '${coin_type}', ${market_cap}, ${high_price}, ${low_price});`;
     var insertCrypto = queryDB(query);
 
-    query = `INSERT INTO listings VALUES ('${exchange}', '${symbol}');`;
-    var insertListing = queryDB(query);
 
     Promise.all([insertCrypto, insertListing]).then(function(result){
         return;
@@ -202,11 +231,11 @@ function addCommodity(name, price, commodity_type, high_price, low_price, exchan
         return;
     }
 
+    query = `INSERT INTO listings VALUES ('${exchange}', '${name}');`;
+    var insertListing = queryDB(query);
     var query = `INSERT INTO commodities VALUES ('${name}', ${price}, '${commodity_type}', ${high_price}, ${low_price});`;
     var insertCommodity = queryDB(query);
 
-    query = `INSERT INTO listings VALUES ('${exchange}', '${name}');`;
-    var insertListing = queryDB(query);
 
     Promise.all([insertCommodity, insertListing]).then(function(result){
         return;
@@ -214,7 +243,7 @@ function addCommodity(name, price, commodity_type, high_price, low_price, exchan
 }
 
 //After the user has logged in, they can view the account page
-app.get("/account", (req, res)=>{
+app.get("/account", authenticateToken, (req, res)=>{
    
     //use the user's cookie to get the user's username
     var LoggedInUser = req.cookies["loginDetails"]["username"];
@@ -232,7 +261,7 @@ app.get("/account", (req, res)=>{
    
 });
 
-app.get("/exchangeaccount", (req, res)=>{
+app.get("/exchangeaccount", authenticateToken, (req, res)=>{
 
     var LoggedInExchange = req.cookies["loginDetails"]["username"];
     
@@ -247,11 +276,12 @@ app.get("/exchangeaccount", (req, res)=>{
 });
 
 //If the user requests to delete their account, this logic is triggered
-app.get("/deleteAccount", (req, res)=>{
+app.get("/deleteAccount", authenticateToken, (req, res)=>{
     //Use the user's cookie to get their username
     var LoggedInUser = req.cookies["loginDetails"]["username"];
     //clear the cookie, to end the user's session
     res.clearCookie("loginDetails");
+    res.clearCookie("token");
 
     //delete the user from the database
     //NEED TO FIX THIS - only the user's entry in the users table is deleted
@@ -265,7 +295,7 @@ app.get("/deleteAccount", (req, res)=>{
 });
 
 //When the user navigates to the market page, this logic will trigger
-app.get("/market", (req,res)=>{
+app.get("/market", authenticateToken, (req,res)=>{
 
     var query = `select * from listings;`
     var listings = queryDB(query);
@@ -315,7 +345,7 @@ app.post("/login", (req, res)=>{
     }
 });
 
-app.post("/searchAsset", (req,res)=>{
+app.post("/searchAsset", authenticateToken, (req,res)=>{
     var searchValue = req.body.searchValue;
     //console.log(searchValue);
 
@@ -338,7 +368,7 @@ app.post("/searchAsset", (req,res)=>{
 });
 
 //When the user submits the form for a trade, this logic triggers
-app.post("/trade", (req, res)=>{
+app.post("/trade", authenticateToken, (req, res)=>{
     //the user desires to make a trade.
     //Find out if the trade was a buy or sell.
     //If it was a purchase, determine if they have enough money to make the purchase
@@ -480,6 +510,10 @@ function validateLogin(username, password, res){
                 //give the user a cookie containing their username, security issue
                 var login = {"username" : username}
                 res.cookie("loginDetails", login);
+
+                const token = generateAccessToken({name: username});
+                res.cookie("token", token);
+            
 
                 //if the user is an exchange owner or a regular user, server them the appropriate page
                 if(result[1][0].isExchange == 1){
