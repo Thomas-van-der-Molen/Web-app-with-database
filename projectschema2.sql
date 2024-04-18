@@ -1,3 +1,8 @@
+--file: projectschema2.sql
+--name: Thomas van der Molen
+--This file defines the sql schema that is used to construct the database
+--This file also includes the insertion statements to populate the database
+
 -- create users table
 drop table if exists users;
 

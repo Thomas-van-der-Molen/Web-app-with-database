@@ -26,7 +26,7 @@
 //https://www.geeksforgeeks.org/how-to-remove-spaces-from-a-string-using-javascript/
 //https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
-//dependencies
+//-- beginning of dependencies
 const express = require('express');
 const maria = require('mariadb');
 const bodyParser = require('body-parser');
@@ -49,15 +49,13 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
+//-- end of dependencies
 
 function generateAccessToken(username){
     return jwt.sign(username, process.env.token_secret, { expiresIn: '1800s' });
 }
 
 function authenticateToken(req, res, next){
-    const authHeader = req.headers['authorization']
-    //const token = authHeader && authHeader.split(' ')[1]
-
     const token = req.cookies['token'];
 
     if (token == null) return res.sendStatus(401)
@@ -75,7 +73,7 @@ function authenticateToken(req, res, next){
 }
 
 //function which will accept a string formatted as a query as input
-//The function will then connect to the local database and execute the query
+//The function will then connect to the local database, execute the query, and reurn the result
 async function queryDB(query){
     let conn;
     try{

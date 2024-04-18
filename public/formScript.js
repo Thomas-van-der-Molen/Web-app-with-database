@@ -1,4 +1,14 @@
-
+/**
+ * 
+ * 
+ * File: formScript.js
+ * Name: Thomas van der Molen
+ * 
+ * This file contains client-side logic that is needed to change the appearance of the website
+ * Speficically, when an asset exchange owner wants to create a new asset, they have to choose the asset class first
+ * This file will change the form that the user has to fill in, so that it will match the needed information for that asset class
+ * 
+ */
 
 function typeChanged(){
     console.log("the user changed their choice");
