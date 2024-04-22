@@ -1,0 +1,150 @@
+<!--
+
+
+    File: exchangeAccount.ejs
+    Name: Thomas van der Molen
+
+    this file contains the HTML that an asset exchange owner will see after they log in 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Assets</title>
+    <!--https://www.w3schools.com/howto/howto_js_topnav.asp-->
+    <!--https://www.w3schools.com/css/css_table.asp-->
+    <!-- https://www.w3schools.com/tags/att_input_maxlength.asp -->
+    <style>
+        h1, h2{
+            text-align: center;
+        }
+        .topnav{
+            background-color:darkslategray;
+        }
+        .topnav a{
+            font-size: 40px;
+            color:azure;
+            text-align: center;
+            text-decoration: none;
+            padding: 14px 16px;
+        }
+        table{
+            width: 50%;
+            margin: auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        table, th, td{
+            border: 1px solid;
+            font-size: 25px;
+        }
+        .marketLink{
+            font-size: 50px;
+            text-decoration: none;
+            background-color: darkslategrey;
+            color: azure;
+            text-align: center;
+        }
+        .marketLink a{
+            text-decoration: none;
+            color: azure;
+        }
+        form{
+            text-align: center;
+        }
+        
+    </style>
+    <script src="/formScript.js"></script>
+</head>
+<body>
+    <div class = "topnav">
+        <a href="/">Logout</a>
+        <a href="/deleteAccount">Delete Account</a>
+        <a href="/exchangeaccount">Profile</a>
+    </div>
+    <h1>Welcome <%=locals.user%></h1>
+    <h1>You are logged in as an exchange owner!</h1>
+    <h2>These are the assets on your exchange:</h2>
+    <!--https://github.com/expressjs/express/blob/master/examples/ejs/views/users.html-->
+    <table>
+        <tr>
+            <th>Name</th>
+            
+        </tr>
+        <tr>
+            <% listings.forEach(function(listing){ %>
+                <tr>
+                    <td><%= listing.asset%></td>
+                    <form id="deleteListing" action="/deletelisting" method="POST">
+                        <td><input type="submit" value="delete"></td>
+                        <input hidden type="text" name="listing" value=<%= listing.asset%>>
+                    </form>
+                </tr>
+            <% }) %>
+        </tr>
+    </table>
+    <br>
+
+    <h2>Add a new Listing</h2>
+    <form id="createNewListing" action="/newListing" method="POST">
+        <select name="assetCategory" id="assetCategory">
+            <option value = "Stock" onclick="typeChanged()">Stock</option>
+            <option value = "Cryptocurrency" onclick="typeChanged()">Cryptocurrency</option>
+            <option value = "Commodity" onclick="typeChanged()">Commodity</option>
+        </select>
+
+        <!--
+            Stock: Symbol
+            Crypto: Symbol
+            Commodity: Name
+        -->
+        <label for="input1" id="input1Label" maxlength="5">Symbol</label>
+        <input type="text" name="input1" id="input1">
+
+        <!--
+            Stock: price
+            Crypto: price
+            Commodity: price
+        -->
+        <label for="input2" id="input2Label" step=".01">Price</label>
+        <input type="number" name="input2" id="input2">
+
+        <!--
+            Stock: dividend
+            Crypto: coin_type
+            commodity: commodity_type
+        -->
+        <label for="input3" id="input3Label" step=".01">Dividend</label>
+        <input type="number" name="input3" id="input3">
+
+        <!--
+            Stock: market_cap
+            Crypto: market_cap
+            Commodity: high_price
+        -->
+        <label for="input4" id="input4Label" step=".01">market_cap</label>
+        <input type="number" name="input4" id="input4">
+
+        <!--
+            Stock: high_price
+            Crypto: high_price
+            commodity: low_price
+        -->
+        <label for="input5" id="input5Label" step=".01">high_price</label>
+        <input type="number" name="input5" id="input5">
+
+        <!--
+            Stock: low_price
+            Crypto: low_price
+            Commodity: none
+        -->
+        <label for="input6" id="input6Label" step=".01">low_price</label>
+        <input type="number" name="input6" id="input6">
+
+        <input type="submit" value="submit">
+    </form>
+
+</body>
+</html>
